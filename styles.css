@@ -1,0 +1,240 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'JetBrains Mono', monospace; 
+    background: #fdfdfd; 
+    color: #1a1a1a; 
+    padding: 40px 20px;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 960px; 
+    margin: auto;
+}
+
+h1, h2, h3 {
+    font-weight: 700;
+    letter-spacing: -1px; 
+}
+
+h1 {
+    font-size: 3rem;
+    color: #0d0d0d;
+}
+
+h2 {
+    margin-top: 50px;
+    font-size: 2rem;
+    border-bottom: 3px solid #ccc; 
+    padding-bottom: 5px;
+    margin-bottom: 25px;
+}
+
+h3 {
+    font-size: 1.25rem;
+    margin-top: 0;
+    margin-bottom: 8px;
+    color: #222;
+}
+
+strong {
+    font-weight: 700; 
+    color: #111; 
+}
+
+.hero-section {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.role-subtitle {
+    color: #4f4f4f;
+    margin-top: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.bio {
+    max-width: 700px;
+    margin: 25px auto;
+    color: #333;
+    font-size: 1rem;
+    padding: 15px;
+    border: 1px dashed #e0e0e0;
+    border-radius: 6px;
+    text-align: center; 
+}
+
+.main-nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.main-nav a {
+    color: #1a1a1a;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 5px 10px;
+    border: 2px solid transparent;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.main-nav a:hover {
+    border-color: #333;
+    background-color: #f0f0f0;
+}
+
+.social-links {
+    margin-top: 35px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.link-button {
+    text-decoration: none;
+    background: #fff;
+    border: 2px solid #222; 
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-weight: 700;
+    color: #222;
+    transition: all 0.3s;
+}
+
+.link-button:hover {
+    background: #222; 
+    color: #fff;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.skills-grid {
+    margin-top: 15px;
+    display: grid;
+    gap: 30px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+}
+
+.skill-category {
+    padding: 15px;
+    border: 1px solid #eee;
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+}
+
+.skill-category ul {
+    margin-top: 10px;
+    padding-left: 20px;
+    list-style-type: "⚡ ";
+}
+
+.skill-category li {
+    margin-bottom: 6px;
+    color: #333;
+}
+
+.project-card {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    padding: 25px;
+    margin-top: 30px;
+    border-radius: 6px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    transition: all 0.3s;
+}
+
+.project-card:hover {
+    border-color: #222;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+}
+
+.project-card p {
+    margin: 15px 0 20px;
+    color: #444;
+}
+
+.project-media {
+    margin-bottom: 20px;
+    text-align: center; 
+    width: 100%; 
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden; 
+}
+
+.project-img {
+    max-width: 100%; 
+    height: auto; 
+    display: block;
+    margin: 0 auto; 
+    transition: transform 0.3s ease;
+}
+
+.project-card:hover .project-img {
+    transform: scale(1.02); 
+}
+
+.tech-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.tech-tags span {
+    background: #f0f0f0;
+    padding: 5px 10px;
+    border-radius: 3px;
+    font-size: 0.85rem;
+    border: 1px solid #ddd;
+    font-weight: 600;
+    color: #333;
+}
+
+.project-links {
+    margin-top: 15px;
+    display: flex;
+    gap: 20px;
+}
+
+.project-links a {
+    color: #2a64ad; 
+    font-weight: 700;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    transition: border-bottom 0.2s;
+}
+
+.project-links a:hover {
+    border-bottom: 2px solid #2a64ad;
+}
+
+hr {
+    margin: 60px 0;
+    border: none;
+    border-top: 2px dotted #e0e0e0;
+}
+
+@media (min-width: 768px) {
+    .skill-category ul {
+        list-style-type: disc; 
+    }
+}

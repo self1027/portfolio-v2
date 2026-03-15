@@ -1,0 +1,106 @@
+<section class="project-card">
+	<button class="link-button-invert" onclick="window.history.back()">← Voltar para Projetos</button>
+	<header class="story-header">
+		<h1>Integra — Educação Sem Barreiras</h1>
+		<p class="subtitle">Arquitetura de Tradução Multilíngue e Reconhecimento de Voz em Tempo Real</p>
+		<div class="tech-tags header-badges">
+			<span>Node.js</span>
+			<span>WebSockets</span>
+			<span>FFmpeg</span>
+			<span>Vosk</span>
+			<span>Google Cloud STT</span>
+			<span>VLibras</span>
+			<span>Three.js</span>
+		</div>
+	</header>
+	<div class="story-content">
+	<h2>Resumo Executivo</h2>
+	<p>
+		O <strong>Integra</strong> é uma plataforma digital que promove a acessibilidade comunicacional de pessoas surdas no ambiente educacional. 
+		Composto pelos módulos <strong>Mãos que Falam</strong> (tradução de fala para Libras) e <strong>Além das Mãos</strong> (comunicação bidirecional e multilíngue), 
+		o sistema combina reconhecimento de voz, processamento de áudio, tradução automática e animação 3D para eliminar barreiras entre surdos, ouvintes e estrangeiros.
+	</p>
+	<div class="img-container">
+		<img src="/media/mermaid/integra/fig-1.png" 
+			alt="Arquitetura de Tradução Fala para Libras" 
+			class="project-story-img" 
+			style="cursor: zoom-in;" 
+			onclick="openImageModal(this.src)">
+	</div>
+	<span class="img-caption">Figura 1: Fluxo de arquitetura do módulo Mãos que Falam</span>
+	<h2>Pipeline de Áudio: Engenharia de Baixa Latência</h2>
+	<p>
+		Um dos maiores desafios técnicos foi garantir a sincronia entre a fala e a sinalização do avatar. Para isso, implementei um pipeline de processamento no cliente que utiliza a <strong>Web Audio API</strong> para preparar o sinal antes do envio via WebSocket.
+	</p>
+	<div class="tech-box">
+		<h3>Tratamento de Sinal Digital (DSP)</h3>
+		<p>A precisão dos motores de reconhecimento (Vosk/Google) depende da qualidade do áudio. Aplicamos filtros em tempo real:</p>
+		<ul>
+			<li><strong>High-pass (300 Hz):</strong> Remove ruídos de baixa frequência (ventiladores, vibrações).</li>
+			<li><strong>Notch (60 Hz):</strong> Filtra interferências elétricas da rede.</li>
+			<li><strong>Compressor Dinâmico:</strong> Normaliza o volume para evitar distorções (clipping).</li>
+		</ul>
+	</div>
+	<div class="img-container">
+		<img src="/media/mermaid/integra/fig-2.png" 
+			alt="Pipeline de Áudio no Cliente" 
+			class="project-story-img" 
+			style="cursor: zoom-in;" 
+			onclick="openImageModal(this.src)">
+	</div>
+	<span class="img-caption">Figura 2: Cadeia de filtros digitais aplicada no front-end</span>
+	<div class="code-container">
+		<div class="code-header">javascript – Configuração de Filtros Digitais</div>
+		<pre><code><span class="token keyword">const</span> highpass = audioContext.<span class="token function">createBiquadFilter</span>();
+highpass.type = <span class="token string">'highpass'</span>;
+highpass.frequency.value = <span class="token number">300</span>;
+
+<span class="token keyword">const</span> notch = audioContext.<span class="token function">createBiquadFilter</span>();
+notch.type = <span class="token string">'notch'</span>;
+notch.frequency.value = <span class="token number">60</span>;
+
+<span class="token keyword">const</span> compressor = audioContext.<span class="token function">createDynamicsCompressor</span>();
+compressor.threshold.value = -<span class="token number">20</span>;
+
+<span class="token comment">// Microfone → Highpass → Notch → Compressor → Socket</span>
+source.<span class="token function">connect</span>(highpass).<span class="token function">connect</span>(notch).<span class="token function">connect</span>(compressor).<span class="token function">connect</span>(processor);</code></pre>
+	</div>
+	<h2>Arquitetura do Servidor: Gerenciamento de Buffers</h2>
+	<p>
+		No backend, gerenciei a conversão de taxas de amostragem em tempo real usando <strong>FFmpeg</strong>. O sistema adota uma estratégia de <strong>Prioridade de Metadados</strong>: o servidor aguarda as configurações do cliente antes de instanciar o pipeline, garantindo a integridade dos dados binários.
+	</p>
+	<div class="img-container">
+		<img src="/media/mermaid/integra/fig-3.png" 
+			alt="Lógica de Servidor WebSocket" 
+			class="project-story-img" 
+			style="cursor: zoom-in;" 
+			onclick="openImageModal(this.src)">
+	</div>
+	<span class="img-caption">Figura 3: Lógica de inicialização e sincronização do servidor Node.js</span>
+	<div class="code-container">
+		<div class="code-header">javascript – Buffer de pré-inicialização</div>
+		<pre><code>ws.<span class="token function">on</span>(<span class="token string">'message'</span>, (data) => {    
+    <span class="token keyword">if</span> (isPipelineInitialized) {
+        ffmpegInstance.<span class="token function">pushAudio</span>(data); <span class="token comment">// Streaming direto</span>
+        <span class="token keyword">return</span>;
+    }
+
+    <span class="token keyword">if</span> (Buffer.<span class="token function">isBuffer</span>(data)) {
+        audioBuffer.<span class="token function">push</span>(data); <span class="token comment">// Armazena chunks até o handshake</span>
+        <span class="token keyword">if</span> (!isPipelineInitialized) <span class="token function">initPipeline</span>(FALLBACK_SAMPLE_RATE);
+    }
+});</code></pre>
+	</div>
+	<h2>Multilíngue e Renderização em Libras</h2>
+	<p>
+		O módulo <strong>Além das Mãos</strong> integra a <strong>Google Cloud Translate API</strong>, permitindo que falas em diferentes idiomas sejam convertidas primeiro em texto e depois sinalizadas pelo avatar 3D do <strong>VLibras</strong>. Esta etapa utiliza <strong>WebGL</strong> e <strong>Three.js</strong> para garantir que os sinais sejam renderizados com fluidez e precisão gramatical.
+	</p>
+	<div class="img-container">
+		<img src="/media/mermaid/integra/fig-4.png" 
+			alt="Fluxo Multilíngue" 
+			class="project-story-img" 
+			style="cursor: zoom-in;" 
+			onclick="openImageModal(this.src)">
+	</div>
+	<span class="img-caption">Figura 4: Fluxo de tradução bidirecional e suporte multilíngue</span>
+</section>

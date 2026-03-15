@@ -227,6 +227,35 @@ strong {
     border-bottom: 2px solid #2a64ad;
 }
 
+.btn-details {
+    margin-left: auto;
+    
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: #222;
+    background: #fff;
+    border: 2px solid #222;
+    padding: 8px 16px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+    border-radius: 4px;
+    
+    box-shadow: 4px 4px 0px #222;
+}
+
+.btn-details:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px #222;
+    background-color: #f0f0f0;
+}
+
+.btn-details:active {
+    transform: translate(4px, 4px);
+    box-shadow: 0px 0px 0px #222;
+}
+
 hr {
     margin: 60px 0;
     border: none;

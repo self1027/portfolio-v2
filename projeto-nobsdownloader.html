@@ -1,0 +1,98 @@
+<section class="project-card">
+	<button class="link-button-invert" onclick="window.history.back()">← Voltar para Projetos</button>
+	<header class="story-header">
+		<h1>NoBSDownloader — Media Extraction Engine</h1>
+		<p class="subtitle">Extração de Mídia com yt-dlp e Processamento em Tempo Real</p>
+		<div class="tech-tags header-badges">
+			<span>Node.js</span>
+			<span>yt-dlp</span>
+			<span>FFmpeg</span>
+			<span>Child Processes</span>
+			<span>YAML</span>
+			<span>CORS</span>
+		</div>
+	</header>
+	<div class="story-content">
+		<h2>Resumo Executivo</h2>
+		<p>
+			O <strong>NoBSDownloader</strong> é uma ferramenta de extração de mídia desenvolvida para contornar a complexidade e os anúncios abusivos de sites de download. Utiliza <strong>yt-dlp</strong> e <strong>FFmpeg</strong> via processos filhos para entregar áudio e vídeo em alta fidelidade, com bypass de restrições via cookies dinâmicos e zero trackers.
+		</p>
+		<div class="img-container">
+			<img src="/media/mermaid/nobsdownloader/fig-1.png" 
+				alt="Fluxo de Requisição e Extração" 
+				class="project-story-img" 
+				style="cursor: zoom-in;" 
+				onclick="openImageModal(this.src)">
+		</div>
+		<span class="img-caption">Figura 1: Fluxo de extração: Da URL à entrega do binário processado.</span>
+		<h2>Gerenciamento de Processos e Segurança</h2>
+		<p>
+			Para garantir a estabilidade do servidor, implementei um controle rigoroso de <strong>concorrência</strong> e limites de tamanho de arquivo. O sistema monitora a saída padrão (stdout) do processo para detectar em tempo real se o arquivo excede os limites de segurança.
+		</p>
+		<div class="tech-box">
+			<h3>Segurança e Controle Operacional</h3>
+			<ul>
+				<li><strong>Taskkill/SIGKILL:</strong> Encerramento forçado de processos órfãos em abortos de usuário.</li>
+				<li><strong>Job Isolation:</strong> Diretórios temporários únicos limpos automaticamente.</li>
+				<li><strong>Bypass de Bot:</strong> Rotação de Cookies e User-Agents dinâmicos.</li>
+			</ul>
+		</div>
+		<div class="img-container">
+			<img src="/media/mermaid/nobsdownloader/fig-2.png" 
+				alt="Pipeline de Conversão de Áudio" 
+				class="project-story-img" 
+				style="cursor: zoom-in;" 
+				onclick="openImageModal(this.src)">
+		</div>
+		<span class="img-caption">Figura 2: Pipeline de transcodificação de áudio via FFmpeg.</span>
+		<div class="code-container">
+			<div class="code-header">javascript – Orquestração de Processos Filhos</div>
+			<pre><code><span class="token keyword">const</span> yt = <span class="token function">spawn</span>(YTDLP_PATH, ytArgs);
+
+yt.stdout.<span class="token function">on</span>(<span class="token string">"data"</span>, (data) => {
+    <span class="token keyword">const</span> output = data.<span class="token function">toString</span>();
+    <span class="token comment">// Monitoramento preventivo de tamanho em GiB</span>
+    <span class="token keyword">if</span> (output.<span class="token function">includes</span>(<span class="token string">"GiB"</span>)) {
+        <span class="token keyword">const</span> sizeMatch = output.<span class="token function">match</span>(<span class="token regex">/(\d+\.\d+)GiB/</span>);
+        <span class="token keyword">if</span> (sizeMatch && <span class="token function">parseFloat</span>(sizeMatch[<span class="token number">1</span>]) >= <span class="token number">1.0</span>) {
+            exitReason = <span class="token string">"LIMIT_EXCEEDED"</span>;
+            process.platform === <span class="token string">"win32"</span> 
+                ? <span class="token function">exec</span>(<span class="token string">`taskkill /pid <span class="token interpolation">${yt.pid}</span> /f /t`</span>) 
+                : yt.<span class="token function">kill</span>(<span class="token string">"SIGKILL"</span>);
+        }
+    }
+});</code></pre>
+		</div>
+		<h2>Arquitetura de Metadados Dinâmicos</h2>
+		<p>
+			O endpoint <code>/info</code> extrai metadados em formato JSON, mapeando resoluções de vídeo e bitrates de áudio disponíveis, filtrando fluxos inválidos.
+		</p>
+		<div class="img-container">
+			<img src="/media/mermaid/nobsdownloader/fig-3.png" 
+				alt="Mapeamento de Formatos" 
+				class="project-story-img" 
+				style="cursor: zoom-in;" 
+				onclick="openImageModal(this.src)">
+		</div>
+		<span class="img-caption">Figura 3: Lógica de parsing e filtragem de formatos de mídia.</span>
+		<div class="code-container">
+			<div class="code-header">javascript – Filtragem de Formatos de Vídeo</div>
+			<pre><code>json.formats.<span class="token function">forEach</span>(f => {
+    <span class="token keyword">const</span> isVideo = f.vcodec !== <span class="token string">"none"</span> || f.video_ext !== <span class="token string">"none"</span>;
+    <span class="token keyword">const</span> height = f.height || <span class="token function">parseInt</span>(f.quality) || <span class="token number">0</span>;
+
+    <span class="token keyword">if</span> (isVideo && height > <span class="token number">0</span> && !videoMap.<span class="token function">has</span>(height)) {
+        videoMap.<span class="token function">set</span>(height, { 
+            format_id: f.format_id, 
+            resolution: <span class="token string">`<span class="token interpolation">${height}</span>p`</span>, 
+            hasAudio: f.acodec !== <span class="token string">"none"</span> 
+        });
+    }
+});</code></pre>
+		</div>
+		<div class="tech-box">
+			<h3>Infraestrutura On-Premise</h3>
+			<p>O NoBSDownloader utiliza um arquivo de configuração <strong>YAML</strong> para abstrair caminhos de binários, facilitando o deploy em diferentes ambientes Linux/Windows.</p>
+		</div>
+	</div>
+</section>

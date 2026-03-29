@@ -1,109 +1,114 @@
 <section class="project-card">
-	<button class="link-button-invert" onclick="voltarParaHome()">← Voltar para Projetos</button>
-	<header class="story-header">
-		<h1>Livro — Gestão de Vigilância Sanitária</h1>
-		<p class="subtitle">Digitalização de Processos, Inteligência de Dados e Monitoramento de Denúncias</p>
-		<div class="tech-tags header-badges">
-			<span>Node.js</span>
-			<span>Sequelize ORM</span>
-			<span>MySQL</span>
-			<span>EJS</span>
-			<span>Chart.js</span>
-		</div>
-	</header>
-	<div class="story-content">
-		<h2>Resumo Executivo</h2>
-		<p>
-			Desenvolvido para a <strong>Vigilância Sanitária de Andradina</strong>, o sistema Livro foi concebido para substituir completamente o modelo de registros físicos por uma plataforma digital centralizada. Fui responsável pelo ciclo completo: desde a análise de requisitos com os agentes municipais e arquitetura de dados até o deploy e manutenção em produção. A solução transformou o fluxo operacional, reduzindo o tempo médio de consulta de registros de <strong>5 minutos para apenas 10 segundos</strong>.
-		</p>
-		<h2>Arquitetura de Dados: Modelagem e Integridade</h2>
-		<p>
-			A transição do papel para o digital exigiu uma estrutura relacional rigorosa. Utilizei o <strong>Sequelize ORM</strong> para gerenciar as entidades e garantir a integridade referencial. Um ponto crítico foi a implementação de <strong>índices compostos</strong> para assegurar que cada combinação de ano e número de denúncia fosse única.
-		</p>
-		<div class="img-container">
-			<img src="/media/mermaid/livro/fig-1.png" 
-				alt="Diagrama de fluxo de registro e unicidade" 
-				class="project-story-img" 
-				style="cursor: zoom-in;" 
-				onclick="openImageModal(this.src)">
-		</div>
-		<span class="img-caption">Fluxo de Registro: Garantindo a unicidade dos protocolos legais e integridade via Sequelize. (Clique para ampliar)</span>
-		<div class="code-container">
-			<div class="code-header">javascript – Definição do Modelo de Denúncia</div>
-			<pre><code><span class="token keyword">const</span> denunciation = connection.<span class="token function">define</span>(<span class="token string">'denunciations'</span>, {
-    year: { type: sequelize.INTEGER, allowNull: <span class="token keyword">false</span> },
-    number: { type: sequelize.INTEGER, allowNull: <span class="token keyword">false</span> },
-    status: { type: sequelize.STRING },
-    title: { type: sequelize.STRING, allowNull: <span class="token keyword">false</span> },
-    description: { type: sequelize.TEXT, allowNull: <span class="token keyword">false</span> },
-    user_id: { type: sequelize.INTEGER, allowNull: <span class="token keyword">true</span> }
+    <button class="link-button-invert" onclick="voltarParaHome()">← Voltar para Projetos</button>
+    
+    <header class="story-header">
+        <h1>Livro — Gestão de Vigilância Sanitária</h1>
+        <p class="subtitle">
+            Digitalização de Processos, Inteligência de Dados e Monitoramento de Denúncias
+        </p>
+
+        <div class="tech-tags header-badges">
+            <span>Node.js</span>
+            <span>Sequelize ORM</span>
+            <span>MySQL</span>
+            <span>EJS</span>
+            <span>Chart.js</span>
+            <span>PM2</span>
+            <span>Nginx</span>
+        </div>
+    </header>
+
+    <div class="story-content">
+
+        <h2>O Problema</h2>
+        <p>
+            A <strong>Vigilância Sanitária de Andradina</strong> operava baseada em registros físicos, o que tornava a busca por históricos lenta e suscetível a perdas. O desafio era converter décadas de protocolos em um sistema digital que garantisse <strong>integridade legal</strong> e rapidez no atendimento ao cidadão.
+        </p>
+
+        <p>
+            Fui responsável pelo ciclo completo: desde o levantamento de requisitos com os agentes municipais até a arquitetura de dados e o deploy na infraestrutura local da prefeitura.
+        </p>
+
+        <h2>Arquitetura de Dados e Integridade</h2>
+        <p>
+            Para garantir que cada denúncia fosse única e rastreável, utilizei o <strong>Sequelize ORM</strong> com uma modelagem rigorosa. Implementei <strong>índices compostos</strong> para assegurar que a combinação de ano e número de protocolo fosse impossível de duplicar, mantendo a validade jurídica dos registros.
+        </p>
+
+        <div class="img-container">
+            <img src="/media/mermaid/livro/fig-1.png" 
+                 alt="Diagrama de fluxo de registro e unicidade" 
+                 class="project-story-img" 
+                 style="cursor: zoom-in;" 
+                 onclick="openImageModal(this.src)">
+        </div>
+        <span class="img-caption">Fluxo de Registro: Garantindo a unicidade dos protocolos legais via DB Constraints.</span>
+
+        <div class="code-container">
+            <div class="code-header">typescript – Definição do Modelo de Denúncia</div>
+            <pre><code class="language-typescript">
+const Denunciation = connection.define('denunciations', {
+    year: { type: Sequelize.INTEGER, allowNull: false },
+    number: { type: Sequelize.INTEGER, allowNull: false },
+    status: { type: Sequelize.STRING },
+    title: { type: Sequelize.STRING, allowNull: false },
+    description: { type: Sequelize.TEXT, allowNull: false }
 }, {
     indexes: [{
-        unique: <span class="token keyword">true</span>,
-        fields: [<span class="token string">'year'</span>, <span class="token string">'number'</span>] <span class="token comment">// Unicidade de protocolo legal</span>
+        unique: true,
+        fields: ['year', 'number'] // Unicidade de protocolo legal por exercício
     }]
-});</code></pre>
-		</div>
-		<div class="tech-box">
-			<h3>Hooks e Automação de Dados</h3>
-			<p>Implementação de <strong>Lifecycle Hooks</strong> para automação de slugs amigáveis.</p>
-		</div>
-		<div class="code-container">
-			<div class="code-header">javascript – Automação via Hooks (BeforeCreate)</div>
-			<pre><code><span class="token keyword">const</span> district = connection.<span class="token function">define</span>(<span class="token string">'districts'</span>, {
-    name: { type: sequelize.STRING, allowNull: <span class="token keyword">false</span> },
-    slug: { type: sequelize.STRING, allowNull: <span class="token keyword">false</span>, unique: <span class="token keyword">true</span> }
-}, {
-    hooks: {
-        <span class="token function">beforeCreate</span>: (district) => {
-            district.slug = <span class="token function">slugify</span>(district.name, { lower: <span class="token keyword">true</span>, strict: <span class="token keyword">true</span> });
-        }
-    }
-});</code></pre>
-		</div>
-		<h2>Rastreabilidade e Logs de Auditoria</h2>
-		<p>
-			Implementei um módulo de <strong>Reports</strong> vinculado a cada denúncia para garantir a transparência governamental.
-		</p>
-		<div class="img-container">
-			<img src="/media/mermaid/livro/fig-2.png" 
-				alt="Diagrama de fluxo de evolução e auditoria" 
-				class="project-story-img" 
-				style="cursor: zoom-in;" 
-				onclick="openImageModal(this.src)">
-		</div>
-		<span class="img-caption">Fluxo de Evolução: Automação de logs de status e trilha de auditoria.</span>
-		<div class="code-container">
-			<div class="code-header">javascript – Modelo de Relatórios e Auditoria</div>
-			<pre><code><span class="token keyword">const</span> report = connection.<span class="token function">define</span>(<span class="token string">'reports'</span>, {
-    description: { type: sequelize.TEXT },
-    denunciation_id: { type: sequelize.INTEGER, allowNull: <span class="token keyword">false</span> },
-    user_id: { type: sequelize.INTEGER, allowNull: <span class="token keyword">false</span> },
-    type: { type: sequelize.INTEGER, allowNull: <span class="token keyword">false</span> } <span class="token comment">// Logs vs Pareceres</span>
-});</code></pre>
-		</div>
-		<h2>Infraestrutura e Implantação Local (Intranet)</h2>
-		<p>
-			O sistema opera na <strong>Intranet da Prefeitura</strong> sob um servidor Linux local com proxy reverso.
-		</p>
-		<div class="code-container">
-			<div class="code-header">bash – Gestão de Processos e Servidor Web</div>
-			<pre><code><span class="token comment"># Gestão de Uptime com PM2</span>
-pm2 start bin/www --name <span class="token string">"sistema-livro"</span>
+});
+            </code></pre>
+        </div>
 
-<span class="token comment"># Configuração de Proxy Reverso no Nginx Local</span>
+        <h2>Automação e Auditoria</h2>
+        <p>
+            Utilizei <strong>Lifecycle Hooks</strong> para automatizar a criação de slugs e metadados, além de um sistema de <strong>Reports</strong> que cria uma trilha de auditoria para cada alteração de status na denúncia.
+        </p>
+
+        <div class="img-container">
+            <img src="/media/mermaid/livro/fig-2.png" 
+                 alt="Diagrama de fluxo de evolução e auditoria" 
+                 class="project-story-img" 
+                 style="cursor: zoom-in;" 
+                 onclick="openImageModal(this.src)">
+        </div>
+        <span class="img-caption">Rastreabilidade: Cada interação gera um log vinculado ao agente responsável.</span>
+
+        <h2>Infraestrutura e Deploy Local</h2>
+        <p>
+            Dada a natureza sensível dos dados, o sistema foi implantado na <strong>Intranet da Prefeitura</strong> em um servidor Linux com proxy reverso Nginx e gestão de uptime via PM2, garantindo que o serviço esteja sempre disponível para os fiscais.
+        </p>
+
+        <div class="code-container">
+            <div class="code-header">bash – Gestão de Processos e Proxy Reverso</div>
+            <pre><code class="language-bash">
+# Gestão de Uptime com PM2
+pm2 start bin/www --name "sistema-livro" --watch
+
+# Configuração Nginx Local
 location / {
     proxy_pass http://localhost:3000;
-    proxy_set_header Host <span class="token interpolation">$host</span>;
-    proxy_set_header X-Real-IP <span class="token interpolation">$remote_addr</span>;
-}</code></pre>
-		</div>
-		<div class="tech-box">
-			<h3>Segurança e Disponibilidade Interna</h3>
-			<ul>
-				<li><strong>Rede Privada:</strong> Proteção de dados sensíveis dentro da rede municipal.</li>
-				<li><strong>PM2 Cluster:</strong> Auto-restart em caso de falhas críticas.</li>
-			</ul>
-		</div>
-	</div>
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+}
+            </code></pre>
+        </div>
+
+        <h2>Resultado</h2>
+        <p>
+            A solução reduziu o tempo médio de consulta de registros de <strong>5 minutos para apenas 10 segundos</strong>, permitindo que a equipe de vigilância foque na fiscalização de campo em vez de burocracia manual.
+        </p>
+
+        <div class="tech-box">
+            <h3>Habilidades Demonstradas</h3>
+            <ul>
+                <li>Levantamento de requisitos e análise de processos públicos.</li>
+                <li>Modelagem de banco de dados relacional complexo (MySQL/Sequelize).</li>
+                <li>Administração de servidores Linux e infraestrutura de rede local.</li>
+                <li>Desenvolvimento de Dashboards e visualização de dados com Chart.js.</li>
+            </ul>
+        </div>
+
+    </div>
 </section>

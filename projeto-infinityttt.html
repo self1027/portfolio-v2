@@ -1,95 +1,122 @@
 <section class="project-card">
     <button class="link-button-invert" onclick="voltarParaHome()">← Voltar para Projetos</button>
+    
     <header class="story-header">
         <h1>Infinity Tic-Tac-Toe</h1>
-        <p class="subtitle">Servidor Autoritativo, Gerenciamento de Salas e Sincronização em Tempo Real</p>
+        <p class="subtitle">
+            Sincronização de Estado em Tempo Real com Servidor Autoritativo
+        </p>
+
         <div class="tech-tags header-badges">
             <span>Node.js</span>
             <span>TypeScript</span>
             <span>Socket.io</span>
             <span>Express</span>
-            <span>Scalable Room Logic</span>
-            <span>Event-Driven Architecture</span>
+            <span>Event-Driven</span>
+            <span>Authoritative Server</span>
         </div>
     </header>
 
     <div class="story-content">
-        <h2>Resumo Executivo</h2>
+
+        <h2>O Problema</h2>
         <p>
-            O <strong>Infinity Tic-Tac-Toe</strong> é um motor de jogo multiplayer que utiliza uma arquitetura de <strong>Servidor Autoritativo</strong> para garantir a integridade das partidas. Desenvolvi uma solução onde toda a lógica de negócio — incluindo a mecânica de expiração de peças (modo infinito) e detecção de vitória — reside exclusivamente no Backend. Isso elimina vulnerabilidades de manipulação de estado no cliente e garante uma sincronização perfeita entre os jogadores via WebSockets.
+            Aplicações multiplayer simples geralmente confiam no cliente para atualizar o estado do jogo. 
+            Isso funciona em cenários locais, mas quebra completamente em ambiente real: 
+            <strong>latência, concorrência e inconsistência entre clientes</strong>.
         </p>
 
-        <h2>Arquitetura Autorizativa e Type Safety</h2>
         <p>
-            Diferente de implementações simples, utilizei <strong>TypeScript</strong> para definir contratos estritos entre cliente e servidor. O uso de interfaces e Enums garante que os pacotes de dados trafegados via Socket.io sejam validados em tempo de compilação, reduzindo drasticamente erros de runtime. No servidor, o estado de cada sala é isolado, permitindo escalabilidade horizontal para múltiplas partidas simultâneas.
+            O resultado de confiar no cliente é um sistema <strong>não determinístico</strong> e vulnerável a manipulações, onde dois jogadores podem ver estados diferentes da mesma partida.
         </p>
 
-        <div class="img-container">
-            <img src="/media/mermaid/ttt/fig-1.png" 
-                 alt="Fluxo de Validação de Movimento no Backend" 
-                 class="project-story-img" 
-                 style="cursor: zoom-in;" 
-                 onclick="openImageModal(this.src)">
-        </div>
-        <span class="img-caption">Workflow de Validação: O servidor atua como a única fonte da verdade, processando a lógica antes do broadcast.</span>
-
-        <div class="code-container">
-            <div class="code-header">typescript – Engine de Movimento (Server-Side)</div>
-            <pre><code><span class="token keyword">interface</span> <span class="token class-name">GameState</span> {
-    board: (string | null)[];
-    history: Move[];
-    turn: 'X' | 'O';
-}
-
-<span class="token comment">// Lógica central autoritativa: Valida e expira peças</span>
-<span class="token keyword">function</span> <span class="token function">processMove</span>(state: GameState, move: Move): GameState {
-    <span class="token keyword">const</span> playerMoves = state.history.filter(m => m.symbol === move.symbol);
-    
-    <span class="token keyword">if</span> (playerMoves.length >= <span class="token number">3</span>) {
-        <span class="token keyword">const</span> oldest = playerMoves[<span class="token number">0</span>];
-        state.board[oldest.position] = <span class="token keyword">null</span>; <span class="token comment">// Libera slot no board</span>
-        state.history = state.history.filter(m => m !== oldest);
-    }
-    
-    state.board[move.position] = move.symbol;
-    <span class="token keyword">return</span> state;
-}</code></pre>
-        </div>
-
-        <h2>Sincronização de Baixa Latência e Gerenciamento de Salas</h2>
+        <h2>A Decisão: Servidor Autoritativo</h2>
         <p>
-            A comunicação em tempo real foi otimizada através do gerenciamento dinâmico de <strong>Rooms</strong> do Socket.io. O backend é responsável por orquestrar o matchmaking, criar identificadores únicos de sessão e gerenciar o ciclo de vida das conexões. Em caso de desconexão, o servidor limpa o estado da memória, evitando <i>memory leaks</i>.
+            Para resolver isso, implementei um modelo de <strong>Servidor Autoritativo</strong>. O cliente foi reduzido a um emissor de intenções e um renderizador de estado, enquanto toda a regra de negócio reside exclusivamente no backend.
         </p>
 
         <div class="img-container">
             <img src="/media/mermaid/ttt/fig-2.png" 
-                 alt="Arquitetura de Broadcast e Sincronização" 
+                 alt="Fluxo de processamento de eventos" 
                  class="project-story-img" 
                  style="cursor: zoom-in;" 
                  onclick="openImageModal(this.src)">
         </div>
-        <span class="img-caption">Broadcast Seletivo: Garantindo que apenas os jogadores da mesma sala recebam as atualizações de estado.</span>
+        <span class="img-caption">
+            Ciclo de vida de um movimento: Validação centralizada e Broadcast síncrono.
+        </span>
+
+        <h2>Lógica do Modo Infinito</h2>
+        <p>
+            No modo "Infinity", o servidor gerencia uma fila circular de peças. Quando um jogador atinge o limite de 3 peças, a mais antiga é removida automaticamente antes da nova ser validada.
+        </p>
+
+        <div class="img-container">
+            <img src="/media/mermaid/ttt/fig-1.png" 
+                 alt="Algoritmo do Modo Infinito" 
+                 class="project-story-img" 
+                 style="cursor: zoom-in;" 
+                 onclick="openImageModal(this.src)">
+        </div>
+        <span class="img-caption">
+            Fluxograma da regra de negócio: Identificação e remoção da peça mais antiga.
+        </span>
 
         <div class="code-container">
-            <div class="code-header">typescript – Controller de Eventos (WebSocket)</div>
-            <pre><code>socket.<span class="token function">on</span>(<span class="token string">'make_move'</span>, ({ position, roomId }) => {
-    <span class="token keyword">const</span> game = roomManager.<span class="token function">getGame</span>(roomId);
-    
-    <span class="token comment">// Early return: Segurança contra jogadas fora de turno ou salas inválidas</span>
-    <span class="token keyword">if</span> (!game || game.turn !== socket.id) <span class="token keyword">return</span>;
+            <div class="code-header">typescript – Implementação da Regra</div>
+            <pre><code class="language-typescript">
+function processMove(state, move) {
+    const playerMoves = state.history.filter(m => m.symbol === move.symbol);
 
-    <span class="token keyword">const</span> updatedState = game.<span class="token function">executeMove</span>(position);
-    io.<span class="token function">to</span>(roomId).<span class="token function">emit</span>(<span class="token string">'update_game'</span>, updatedState);
-});</code></pre>
+    // Regra do modo infinito: limite de peças
+    if (playerMoves.length >= 3) {
+        const oldest = playerMoves[0];
+        state.board[oldest.position] = null; // Libera a casa antiga
+    }
+
+    state.board[move.position] = move.symbol;
+    return state;
+}
+            </code></pre>
         </div>
 
+        <h2>Controle de Concorrência</h2>
+        <p>
+            Como múltiplos clientes emitem eventos simultaneamente, o servidor atua como o ponto de serialização, garantindo que as jogadas sejam processadas em ordem estrita.
+        </p>
+
+        <ul>
+            <li><strong>Verificação de Turno:</strong> Rejeita comandos de quem não está na vez.</li>
+            <li><strong>Single Source of Truth:</strong> O estado em memória do servidor sobrepõe qualquer estado local do cliente.</li>
+            <li><strong>Race Condition Prevention:</strong> Operações atômicas no processamento da fila de eventos do Socket.io.</li>
+        </ul>
+
+        <div class="code-container">
+            <div class="code-header">typescript – Validação e Serialização</div>
+            <pre><code class="language-typescript">
+socket.on('make_move', ({ position, roomId }) => {
+    const game = roomManager.getGame(roomId);
+
+    if (!game || game.turn !== socket.id) return; // Bloqueio autoritativo
+
+    const updatedState = game.executeMove(position);
+    io.to(roomId).emit('update_game', updatedState);
+});
+            </code></pre>
+        </div>
+
+        <h2>Resultado e Trade-offs</h2>
+        <p>
+            A arquitetura prioriza a <strong>integridade do jogo</strong>. Embora exija mais processamento do servidor e gestão de estado em memória, o resultado é uma experiência multiplayer justa e tecnicamente sólida.
+        </p>
+
         <div class="tech-box">
-            <h3>Engenharia de Backend Aplicada</h3>
+            <h3>O que esse projeto demonstra</h3>
             <ul>
-                <li><strong>Strict Typing:</strong> Modelagem de dados com TypeScript para garantir consistência no tráfego WebSocket.</li>
-                <li><strong>Stateful Server:</strong> Gerenciamento eficiente de estados em memória para partidas multiplayer.</li>
-                <li><strong>Race Condition Prevention:</strong> Lógica de validação sequencial para evitar movimentos duplicados no mesmo milissegundo.</li>
-                <li><strong>Modular Strategy:</strong> Separação de regras (Classic vs Infinity) usando o Design Pattern <i>Strategy</i>.</li>
+                <li>Design de sistemas distribuídos em tempo real.</li>
+                <li>Gerenciamento de concorrência e sincronização de estado.</li>
+                <li>Arquitetura orientada a eventos com Socket.io.</li>
+                <li>Aplicação de lógica de negócio complexa no Backend.</li>
             </ul>
         </div>
     </div>

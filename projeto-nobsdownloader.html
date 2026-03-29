@@ -1,98 +1,104 @@
 <section class="project-card">
-	<button class="link-button-invert" onclick="voltarParaHome()">← Voltar para Projetos</button>
-	<header class="story-header">
-		<h1>NoBSDownloader — Media Extraction Engine</h1>
-		<p class="subtitle">Extração de Mídia com yt-dlp e Processamento em Tempo Real</p>
-		<div class="tech-tags header-badges">
-			<span>Node.js</span>
-			<span>yt-dlp</span>
-			<span>FFmpeg</span>
-			<span>Child Processes</span>
-			<span>YAML</span>
-			<span>CORS</span>
-		</div>
-	</header>
-	<div class="story-content">
-		<h2>Resumo Executivo</h2>
-		<p>
-			O <strong>NoBSDownloader</strong> é uma ferramenta de extração de mídia desenvolvida para contornar a complexidade e os anúncios abusivos de sites de download. Utiliza <strong>yt-dlp</strong> e <strong>FFmpeg</strong> via processos filhos para entregar áudio e vídeo em alta fidelidade, com bypass de restrições via cookies dinâmicos e zero trackers.
-		</p>
-		<div class="img-container">
-			<img src="/media/mermaid/nobsdownloader/fig-1.png" 
-				alt="Fluxo de Requisição e Extração" 
-				class="project-story-img" 
-				style="cursor: zoom-in;" 
-				onclick="openImageModal(this.src)">
-		</div>
-		<span class="img-caption">Figura 1: Fluxo de extração: Da URL à entrega do binário processado.</span>
-		<h2>Gerenciamento de Processos e Segurança</h2>
-		<p>
-			Para garantir a estabilidade do servidor, implementei um controle rigoroso de <strong>concorrência</strong> e limites de tamanho de arquivo. O sistema monitora a saída padrão (stdout) do processo para detectar em tempo real se o arquivo excede os limites de segurança.
-		</p>
-		<div class="tech-box">
-			<h3>Segurança e Controle Operacional</h3>
-			<ul>
-				<li><strong>Taskkill/SIGKILL:</strong> Encerramento forçado de processos órfãos em abortos de usuário.</li>
-				<li><strong>Job Isolation:</strong> Diretórios temporários únicos limpos automaticamente.</li>
-				<li><strong>Bypass de Bot:</strong> Rotação de Cookies e User-Agents dinâmicos.</li>
-			</ul>
-		</div>
-		<div class="img-container">
-			<img src="/media/mermaid/nobsdownloader/fig-2.png" 
-				alt="Pipeline de Conversão de Áudio" 
-				class="project-story-img" 
-				style="cursor: zoom-in;" 
-				onclick="openImageModal(this.src)">
-		</div>
-		<span class="img-caption">Figura 2: Pipeline de transcodificação de áudio via FFmpeg.</span>
-		<div class="code-container">
-			<div class="code-header">javascript – Orquestração de Processos Filhos</div>
-			<pre><code><span class="token keyword">const</span> yt = <span class="token function">spawn</span>(YTDLP_PATH, ytArgs);
+    <button class="link-button-invert" onclick="voltarParaHome()">← Voltar para Projetos</button>
+    
+    <header class="story-header">
+        <h1>NoBSDownloader — Media Extraction Engine</h1>
+        <p class="subtitle">
+            Extração de Mídia com yt-dlp e Processamento de Streams em Tempo Real
+        </p>
 
-yt.stdout.<span class="token function">on</span>(<span class="token string">"data"</span>, (data) => {
-    <span class="token keyword">const</span> output = data.<span class="token function">toString</span>();
-    <span class="token comment">// Monitoramento preventivo de tamanho em GiB</span>
-    <span class="token keyword">if</span> (output.<span class="token function">includes</span>(<span class="token string">"GiB"</span>)) {
-        <span class="token keyword">const</span> sizeMatch = output.<span class="token function">match</span>(<span class="token regex">/(\d+\.\d+)GiB/</span>);
-        <span class="token keyword">if</span> (sizeMatch && <span class="token function">parseFloat</span>(sizeMatch[<span class="token number">1</span>]) >= <span class="token number">1.0</span>) {
-            exitReason = <span class="token string">"LIMIT_EXCEEDED"</span>;
-            process.platform === <span class="token string">"win32"</span> 
-                ? <span class="token function">exec</span>(<span class="token string">`taskkill /pid <span class="token interpolation">${yt.pid}</span> /f /t`</span>) 
-                : yt.<span class="token function">kill</span>(<span class="token string">"SIGKILL"</span>);
+        <div class="tech-tags header-badges">
+            <span>Node.js</span>
+            <span>yt-dlp</span>
+            <span>FFmpeg</span>
+            <span>Child Processes</span>
+            <span>Stream Processing</span>
+            <span>YAML</span>
+        </div>
+    </header>
+
+    <div class="story-content">
+
+        <h2>O Problema</h2>
+        <p>
+            Plataformas de download de mídia costumam ser saturadas de anúncios abusivos, trackers e redirecionamentos maliciosos. O desafio era criar uma ferramenta que oferecesse uma interface limpa para extração de áudio e vídeo, lidando com a complexidade de <strong>bypass de bots</strong> e transcodificação de formatos em tempo real.
+        </p>
+
+        <h2>A Decisão: Orquestração de Processos Filhos</h2>
+        <p>
+            Para não sobrecarregar o loop de eventos do Node.js, implementei a orquestração do <strong>yt-dlp</strong> e <strong>FFmpeg</strong> via processos filhos (<code>spawn</code>). Isso permite o monitoramento direto da saída padrão (stdout), possibilitando o encerramento preventivo de tarefas que excedam limites de segurança.
+        </p>
+
+        <div class="img-container">
+            <img src="/media/mermaid/nobsdownloader/fig-1.png" 
+                 alt="Fluxo de Requisição e Extração" 
+                 class="project-story-img" 
+                 style="cursor: zoom-in;" 
+                 onclick="openImageModal(this.src)">
+        </div>
+        <span class="img-caption">Figura 1: Fluxo de extração: Da URL à entrega do binário processado.</span>
+
+        <div class="code-container">
+            <div class="code-header">javascript – Orquestração de Processos Filhos</div>
+            <pre><code class="language-javascript">
+const yt = spawn(YTDLP_PATH, ytArgs);
+
+yt.stdout.on("data", (data) => {
+    const output = data.toString();
+    // Monitoramento preventivo de recursos: Bloqueio de arquivos > 1GiB
+    if (output.includes("GiB")) {
+        const sizeMatch = output.match(/(\d+\.\d+)GiB/);
+        if (sizeMatch && parseFloat(sizeMatch[1]) >= 1.0) {
+            exitReason = "LIMIT_EXCEEDED";
+            process.platform === "win32" 
+                ? exec(`taskkill /pid ${yt.pid} /f /t`) 
+                : yt.kill("SIGKILL");
         }
     }
-});</code></pre>
-		</div>
-		<h2>Arquitetura de Metadados Dinâmicos</h2>
-		<p>
-			O endpoint <code>/info</code> extrai metadados em formato JSON, mapeando resoluções de vídeo e bitrates de áudio disponíveis, filtrando fluxos inválidos.
-		</p>
-		<div class="img-container">
-			<img src="/media/mermaid/nobsdownloader/fig-3.png" 
-				alt="Mapeamento de Formatos" 
-				class="project-story-img" 
-				style="cursor: zoom-in;" 
-				onclick="openImageModal(this.src)">
-		</div>
-		<span class="img-caption">Figura 3: Lógica de parsing e filtragem de formatos de mídia.</span>
-		<div class="code-container">
-			<div class="code-header">javascript – Filtragem de Formatos de Vídeo</div>
-			<pre><code>json.formats.<span class="token function">forEach</span>(f => {
-    <span class="token keyword">const</span> isVideo = f.vcodec !== <span class="token string">"none"</span> || f.video_ext !== <span class="token string">"none"</span>;
-    <span class="token keyword">const</span> height = f.height || <span class="token function">parseInt</span>(f.quality) || <span class="token number">0</span>;
+});
+            </code></pre>
+        </div>
 
-    <span class="token keyword">if</span> (isVideo && height > <span class="token number">0</span> && !videoMap.<span class="token function">has</span>(height)) {
-        videoMap.<span class="token function">set</span>(height, { 
+        <h2>Gerenciamento de Segurança e Metadados</h2>
+        <p>
+            O sistema realiza um parsing rigoroso do endpoint <code>/info</code> para mapear resoluções e bitrates disponíveis, filtrando fluxos inválidos. Para garantir a estabilidade, utilizei diretórios temporários únicos que são limpos automaticamente após o processamento.
+        </p>
+
+        <div class="img-container">
+            <img src="/media/mermaid/nobsdownloader/fig-2.png" 
+                 alt="Pipeline de Conversão de Áudio" 
+                 class="project-story-img" 
+                 style="cursor: zoom-in;" 
+                 onclick="openImageModal(this.src)">
+        </div>
+        <span class="img-caption">Figura 2: Pipeline de transcodificação de áudio via FFmpeg.</span>
+
+        <div class="code-container">
+            <div class="code-header">javascript – Filtragem Dinâmica de Formatos</div>
+            <pre><code class="language-javascript">
+json.formats.forEach(f => {
+    const isVideo = f.vcodec !== "none" || f.video_ext !== "none";
+    const height = f.height || parseInt(f.quality) || 0;
+
+    if (isVideo && height > 0 && !videoMap.has(height)) {
+        videoMap.set(height, { 
             format_id: f.format_id, 
-            resolution: <span class="token string">`<span class="token interpolation">${height}</span>p`</span>, 
-            hasAudio: f.acodec !== <span class="token string">"none"</span> 
+            resolution: `${height}p`, 
+            hasAudio: f.acodec !== "none" 
         });
     }
-});</code></pre>
-		</div>
-		<div class="tech-box">
-			<h3>Infraestrutura On-Premise</h3>
-			<p>O NoBSDownloader utiliza um arquivo de configuração <strong>YAML</strong> para abstrair caminhos de binários, facilitando o deploy em diferentes ambientes Linux/Windows.</p>
-		</div>
-	</div>
+});
+            </code></pre>
+        </div>
+
+        <div class="tech-box">
+            <h3>O que esse projeto demonstra</h3>
+            <ul>
+                <li>Integração avançada com binários de sistema via <strong>Child Processes</strong>.</li>
+                <li>Gerenciamento de <strong>Streams e Buffers</strong> em tempo real.</li>
+                <li>Implementação de políticas de segurança e isolamento de jobs (SIGKILL/Taskkill).</li>
+                <li>Arquitetura modular configurável via <strong>YAML</strong> para diferentes ambientes.</li>
+            </ul>
+        </div>
+    </div>
 </section>

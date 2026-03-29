@@ -21,10 +21,16 @@ async function carregarProjeto(url) {
 
         setTimeout(() => {
             mainContent.innerHTML = html;
+
+            if (window.Prism) {
+                Prism.highlightAllUnder(mainContent);
+            }
+
             mainContent.style.opacity = 1;
             currentView = 'project';
 
             requestAnimationFrame(() => {
+                Prism.highlightAllUnder(mainContent);
                 const target = document.querySelector('.hero-section');
                 if (target) {
                     target.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -88,3 +94,7 @@ function openImageModal(src) {
         modal.style.backgroundColor = 'white';
     }
 }
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === "Escape") document.getElementById('imageModal').style.display = 'none';
+});

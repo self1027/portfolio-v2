@@ -3,12 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Murilo D. | Dev Backend Node.js</title>
+
+    <title>Murilo Dias | Backend Developer Node.js</title>
+
+    <meta name="description" content="Murilo Dias é desenvolvedor backend especializado em Node.js, APIs REST, WebSockets e sistemas em produção. Experiência com aplicações reais e alta performance.">
+    <meta name="author" content="Murilo Dias">
+    <meta name="keywords" content="Murilo Dias, backend developer, Node.js, APIs REST, WebSocket, desenvolvedor backend Brasil">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Murilo Dias | Backend Developer">
+    <meta property="og:description" content="Backend Developer com experiência em sistemas reais, APIs escaláveis e processamento em tempo real.">
+    <meta property="og:type" content="website">
+
     <link rel="stylesheet" href="/css/deepdive.css">
     <link rel="stylesheet" href="/css/index.css">
     <link rel="icon" href="media/letra-m.png" type="image/x-icon">
-    <meta name="description" content="Portfólio de desenvolvedor backend Murilo D. especializado em Node.js, APIs RESTful, e arquitetura escalável.">
-    
+    <link href="https://cdn.jsdelivr.net/npm/prismjs/themes/prism-tomorrow.css" rel="stylesheet" />
+
     <script type="text/javascript">
         (function(c,l,a,r,i,t,y){
             c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
@@ -18,7 +29,6 @@
     </script>
 
     <style>
-        /* Estilo rápido para garantir o feedback visual de clique */
         .project-img {
             cursor: zoom-in;
             transition: transform 0.3s ease;
@@ -27,151 +37,191 @@
             transform: scale(1.02);
             filter: brightness(1.1);
         }
+        .highlight {
+            margin-top: 20px;
+            padding: 15px;
+            border-left: 3px solid #00bcd4;
+            background: rgba(255,255,255,0.03);
+            font-size: 0.95rem;
+        }
     </style>
 </head>
+
 <body>
-    <div class="container">
-        <header class="hero-section">
-            <h1 class="name-title">Murilo D.</h1>
-            <p class="role-subtitle">Desenvolvedor Backend</p>
-            <p class="bio">
-                Desenvolvedor com experiência em NodeJs, Express, Bancos SQL e NOSQL, Cloud Run e AWS.
+<div class="container">
+
+    <header class="hero-section">
+        <h1 class="name-title">Murilo Dias</h1>
+
+        <p class="role-subtitle">
+            Backend Developer | Node.js | Sistemas em Produção
+        </p>
+
+        <p class="bio">
+            Desenvolvedor backend focado em Node.js, criando sistemas reais em produção com APIs escaláveis, processamento em tempo real e arquitetura orientada a eventos.
+        </p>
+
+        <p style="margin-top:10px;">
+            Aberto a oportunidades como Backend Developer.
+        </p>
+
+        <nav class="main-nav">
+            <ul>
+                <li><a href="#projetos">Projetos</a></li>
+                <li><a href="#habilidades">Habilidades</a></li>
+            </ul>
+        </nav>
+
+        <div class="social-links">
+            <a href="/media/cv-murilo-dias-backend.pdf" target="_blank" class="link-button">Currículo</a>
+            <a href="mailto:diasmurilo02@gmail.com" target="_blank" class="link-button">E-Mail</a>
+            <a href="https://www.linkedin.com/in/murilo-dias-dev/" target="_blank" class="link-button">LinkedIn</a>
+            <a href="https://github.com/self1027" target="_blank" class="link-button">GitHub</a>
+        </div>
+
+        <!-- NOVA SEÇÃO DE IMPACTO -->
+        <section class="highlight">
+            <p>
+                • Sistema em produção utilizado por órgão público<br>
+                • Consultas reduzidas de minutos para segundos<br>
+                • Processamento em tempo real (WebSocket + streaming)<br>
+                • Arquitetura orientada a eventos
             </p>
-            <nav class="main-nav">
-                <ul>
-                    <li><a href="#projetos">Projetos</a></li>
-                    <li><a href="#habilidades">Habilidades</a></li>
-                </ul>
-            </nav>
-            <div class="social-links">
-                <a href="/media/cv-murilo-dias-backend.pdf" target="_blank" class="link-button">Currículo</a>
-                <a href="mailto:diasmurilo02@gmail.com" target="_blank" class="link-button">E-Mail</a>
-                <a href="https://www.linkedin.com/in/murilo-dias-dev/" target="_blank" class="link-button">LinkedIn</a>
-                <a href="https://github.com/self1027" target="_blank" class="link-button">GitHub</a>
-            </div>
-        </header>
+        </section>
+    </header>
 
-        <main>
-            <hr>
-            <section id="projetos" class="projects-section">
-                <h2>Projetos de Destaque</h2>
+    <main>
+        <hr>
 
-                <article class="project-card">
-                    <h3>Livro de Fiscalizações - Vigilância Sanitária</h3>
-                    <div class="project-media">
-                        <img src="./media/livro-demo.png" alt="Painel Vigilância Sanitária" class="project-img" onclick="openImageModal(this.src)">
-                    </div>
-                    <p>
-                        Sistema Fullstack que digitalizou a <strong>Vigilância Sanitária de Andradina</strong>, reduzindo o tempo de consulta de 5 minutos para 10 segundos. Foco em integridade de dados e relatórios de auditoria.
-                    </p>
-                    <div class="tech-tags">
-                        <span>Node.js</span>
-                        <span>PostgreSQL</span>
-                        <span>Sequelize</span>
-                        <span>EJS</span>
-                    </div>
-                    <div class="project-links">
-                        <a href="https://github.com/self1027/Livro" target="_blank">Código</a>
-                        <a href="https://livro.murilod.dev/" target="_blank">Demo</a>
-                        <button class="btn-details" onclick="carregarProjeto('projeto-livro.html')">Saiba Mais</button>
-                    </div>
-                </article>
+        <section id="projetos" class="projects-section">
+            <h2>Projetos de Destaque</h2>
 
-                <article class="project-card">
-                    <h3>Integra — Libras 3D</h3>
-                    <div class="project-media">
-                        <img src="./media/integra-demo.png" alt="Plataforma Integra" class="project-img" onclick="openImageModal(this.src)">
-                    </div>
-                    <p>
-                        Acessibilidade em tempo real: transforma fala em sinais de Libras via avatar 3D. Integração complexa de APIs de áudio e processamento de linguagem.
-                    </p>
-                    <div class="tech-tags">
-                        <span>Node.js</span>
-                        <span>WebSocket</span>
-                        <span>Google Cloud</span>
-                        <span>FFmpeg</span>
-                    </div>
-                    <div class="project-links">
-                        <a href="https://github.com/self1027/INTEGRA" target="_blank">Código</a>
-                        <a href="https://integra.murilod.dev/" target="_blank">Demo</a>
-                        <button class="btn-details" onclick="carregarProjeto('projeto-integra.html')">Saiba Mais</button>
-                    </div>
-                </article>
-
-                <article class="project-card">
-                    <h3>Infinity Tic-Tac-Toe — Authoritative Server</h3>
-                    <div class="project-media">
-                        <img src="./media/infinityttt-demo.png" alt="Infinity TTT" class="project-img" onclick="openImageModal(this.src)">
-                    </div>
-                    <p>
-                        Motor de jogo multiplayer com <strong>Servidor Autoritativo</strong>. Gerenciamento de estado de alta performance onde a lógica de expiração de peças reside 100% no backend.
-                    </p>
-                    <div class="tech-tags">
-                        <span>Node.js</span>
-                        <span>TypeScript</span>
-                        <span>Socket.io</span>
-                        <span>Scalable Room Logic</span>
-                        <span>Event-Driven</span>
-                    </div>
-                    <div class="project-links">
-                        <a href="https://github.com/self1027/infinity-ttt" target="_blank">Código</a>
-                        <a href="https://infinityttt.murilod.dev/" target="_blank">Demo</a>
-                        <button class="btn-details" onclick="carregarProjeto('projeto-infinityttt.html')">Saiba Mais</button>
-                    </div>
-                </article>
-
-                <article class="project-card">
-                    <h3>NoBSDownloader — Media Extraction</h3>
-                    <div class="project-media">
-                        <img src="./media/nobsd-demo.png" alt="NoBSDownloader" class="project-img" onclick="openImageModal(this.src)">
-                    </div>
-                    <p>
-                        Ferramenta de extração de mídia via <strong>Child Processes</strong> (yt-dlp/FFmpeg). Interface limpa sem anúncios ou rastreadores.
-                    </p>
-                    <div class="tech-tags">
-                        <span>Node.js</span>
-                        <span>yt-dlp</span>
-                        <span>FFmpeg</span>
-                        <span>Child Processes</span>
-                    </div>
-                    <div class="project-links">
-                        <a href="https://github.com/self1027/NoBSDownloader" target="_blank">Código</a>
-                        <button class="btn-details" onclick="carregarProjeto('projeto-nobsdownloader.html')">Saiba Mais</button>
-                    </div>
-                </article>
-
-            </section>
-            <hr>
-            
-            <section id="habilidades" class="skills-section">
-                <h2>Habilidades Técnicas</h2>
-                <div class="skills-grid">
-                    <article class="skill-category">
-                        <h3>Back-End</h3>
-                        <ul>
-                            <li>Node.js, Express, TypeScript</li>
-                            <li>PostgreSQL, MongoDB, Sequelize</li>
-                            <li>Cloud Run, AWS, Google Cloud</li>
-                            <li>APIs RESTful & WebSockets</li>
-                        </ul>
-                    </article>
-                    <article class="skill-category">
-                        <h3>DevOps & Infra</h3>
-                        <ul>
-                            <li>CI/CD (GitHub Actions)</li>
-                            <li>Linux Server & Nginx</li>
-                            <li>Docker & PM2</li>
-                        </ul>
-                    </article>
+            <article class="project-card">
+                <h3>Livro de Fiscalizações - Vigilância Sanitária</h3>
+                <div class="project-media">
+                    <img src="./media/livro-demo.png" class="project-img" onclick="openImageModal(this.src)">
                 </div>
-            </section>
-        </main>
-    </div>
+                <p>
+                    Sistema utilizado em produção pela Vigilância Sanitária de Andradina, responsável pela gestão completa de denúncias. 
+                    Reduzi o tempo de consulta de ~5 minutos para menos de 10 segundos, garantindo integridade e rastreabilidade dos dados.
+                </p>
+                <div class="tech-tags">
+                    <span>Node.js</span>
+                    <span>PostgreSQL</span>
+                    <span>Sequelize</span>
+                    <span>EJS</span>
+                </div>
+                <div class="project-links">
+                    <a href="https://github.com/self1027/Livro" target="_blank">Código</a>
+                    <a href="https://livro.murilod.dev/" target="_blank">Demo</a>
+                    <button class="btn-details" onclick="carregarProjeto('projeto-livro.html')">Saiba Mais</button>
+                </div>
+            </article>
 
-    <div id="imageModal" onclick="this.style.display='none'" style="display:none; position:fixed; z-index:10000; left:0; top:0; width:100%; height:100%; background-color:rgba(0,0,0,0.9); align-items:center; justify-content:center; cursor:zoom-out; backdrop-filter: blur(5px);">
-        <img id="modalImg" style="max-width:90%; max-height:90%; border-radius:8px; box-shadow: 0 0 30px rgba(0,0,0,0.5);">
-    </div>
+            <article class="project-card">
+                <h3>Integra — Libras 3D</h3>
+                <div class="project-media">
+                    <img src="./media/integra-demo.png" class="project-img" onclick="openImageModal(this.src)">
+                </div>
+                <p>
+                    Sistema de acessibilidade em tempo real que converte fala em Libras via avatar 3D. 
+                    Pipeline de áudio com WebSocket, FFmpeg e serviços de tradução, processando dados continuamente.
+                </p>
+                <div class="tech-tags">
+                    <span>Node.js</span>
+                    <span>WebSocket</span>
+                    <span>Google Cloud</span>
+                    <span>FFmpeg</span>
+                </div>
+                <div class="project-links">
+                    <a href="https://github.com/self1027/INTEGRA" target="_blank">Código</a>
+                    <a href="https://integra.murilod.dev/" target="_blank">Demo</a>
+                    <button class="btn-details" onclick="carregarProjeto('projeto-integra.html')">Saiba Mais</button>
+                </div>
+            </article>
 
-    <script src="script.js"></script>
+            <article class="project-card">
+                <h3>Infinity Tic-Tac-Toe — Authoritative Server</h3>
+                <div class="project-media">
+                    <img src="./media/infinityttt-demo.png" class="project-img" onclick="openImageModal(this.src)">
+                </div>
+                <p>
+                    Motor multiplayer com arquitetura de servidor autoritativo, garantindo consistência de estado e evitando manipulação do cliente. 
+                    Gerenciamento de salas e eventos em tempo real com alta performance.
+                </p>
+                <div class="tech-tags">
+                    <span>Node.js</span>
+                    <span>TypeScript</span>
+                    <span>Socket.io</span>
+                    <span>Event-Driven</span>
+                </div>
+                <div class="project-links">
+                    <a href="https://github.com/self1027/infinity-ttt" target="_blank">Código</a>
+                    <a href="https://infinityttt.murilod.dev/" target="_blank">Demo</a>
+                    <button class="btn-details" onclick="carregarProjeto('projeto-infinityttt.html')">Saiba Mais</button>
+                </div>
+            </article>
+
+            <article class="project-card">
+                <h3>NoBSDownloader — Media Extraction</h3>
+                <div class="project-media">
+                    <img src="./media/nobsd-demo.png" class="project-img" onclick="openImageModal(this.src)">
+                </div>
+                <p>
+                    Ferramenta de extração de mídia utilizando child processes com integração ao yt-dlp e FFmpeg. 
+                    Processamento eficiente de streams com foco em performance e simplicidade.
+                </p>
+                <div class="tech-tags">
+                    <span>Node.js</span>
+                    <span>yt-dlp</span>
+                    <span>FFmpeg</span>
+                    <span>Child Processes</span>
+                </div>
+                <div class="project-links">
+                    <a href="https://github.com/self1027/NoBSDownloader" target="_blank">Código</a>
+                    <button class="btn-details" onclick="carregarProjeto('projeto-nobsdownloader.html')">Saiba Mais</button>
+                </div>
+            </article>
+
+        </section>
+
+        <hr>
+
+        <section id="habilidades" class="skills-section">
+            <h2>Habilidades Técnicas</h2>
+            <div class="skills-grid">
+
+                <article class="skill-category">
+                    <h3>Back-End</h3>
+                    <ul>
+                        <li>Node.js, Express, TypeScript</li>
+                        <li>PostgreSQL, MongoDB, Sequelize</li>
+                        <li>Cloud Run, AWS, Google Cloud</li>
+                        <li>APIs REST e WebSockets</li>
+                    </ul>
+                </article>
+
+                <article class="skill-category">
+                    <h3>DevOps & Infra</h3>
+                    <ul>
+                        <li>CI/CD (GitHub Actions)</li>
+                        <li>Linux Server & Nginx</li>
+                        <li>Docker & PM2</li>
+                    </ul>
+                </article>
+
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<div id="imageModal" onclick="this.style.display='none'" style="display:none; position:fixed; z-index:10000; left:0; top:0; width:100%; height:100%; background-color:rgba(0,0,0,0.9); align-items:center; justify-content:center; cursor:zoom-out;">
+    <img id="modalImg" style="max-width:90%; max-height:90%;">
+</div>
+
+<script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs/prism.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-typescript.min.js"></script>
 </body>
 </html>

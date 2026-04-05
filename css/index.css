@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap');
 
-/* ================== ROOT ================== */
 :root {
     --primary: #2a64ad;
     --accent: #00bcd4;
@@ -10,7 +9,6 @@
     --bg-soft: #fafafa;
 }
 
-/* ================== RESET ================== */
 * {
     margin: 0;
     padding: 0;
@@ -33,13 +31,11 @@ a {
     transition: all 0.2s ease;
 }
 
-/* ================== LAYOUT ================== */
 .container {
     max-width: 960px;
     margin: auto;
 }
 
-/* ================== TYPOGRAPHY ================== */
 h1, h2, h3 {
     font-weight: 700;
     letter-spacing: -1px;
@@ -69,7 +65,6 @@ strong {
     color: #111;
 }
 
-/* ================== HERO ================== */
 .hero-section {
     text-align: center;
     margin-bottom: 60px;
@@ -95,7 +90,6 @@ strong {
     border-radius: 6px;
 }
 
-/* ================== NAV ================== */
 .main-nav ul {
     list-style: none;
     display: flex;
@@ -118,7 +112,6 @@ strong {
     background-color: #f0f0f0;
 }
 
-/* ================== SOCIAL ================== */
 .social-links {
     margin-top: 35px;
     display: flex;
@@ -145,7 +138,6 @@ strong {
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
-/* ================== HIGHLIGHT ================== */
 .highlight {
     margin-top: 25px;
     padding: 15px 20px;
@@ -155,7 +147,6 @@ strong {
     text-align: left;
 }
 
-/* ================== PROJECTS ================== */
 .project-card {
     background: #fff;
     border: 1px solid var(--border);
@@ -177,7 +168,6 @@ strong {
     color: #444;
 }
 
-/* ================== MEDIA ================== */
 .project-media {
     margin-bottom: 20px;
     text-align: center;
@@ -200,7 +190,6 @@ strong {
     filter: brightness(1.05);
 }
 
-/* ================== TAGS ================== */
 .tech-tags {
     display: flex;
     flex-wrap: wrap;
@@ -218,7 +207,6 @@ strong {
     font-weight: 600;
 }
 
-/* ================== LINKS ================== */
 .project-links {
     margin-top: 15px;
     display: flex;
@@ -237,7 +225,6 @@ strong {
     border-bottom: 2px solid var(--primary);
 }
 
-/* ================== BUTTON ================== */
 .btn-details {
     margin-left: auto;
     font-family: 'JetBrains Mono', monospace;
@@ -264,7 +251,6 @@ strong {
     box-shadow: 0px 0px 0px #222;
 }
 
-/* ================== SKILLS ================== */
 .skills-grid {
     margin-top: 15px;
     display: grid;
@@ -291,14 +277,12 @@ strong {
     color: #333;
 }
 
-/* ================== HR ================== */
 hr {
     margin: 60px 0;
     border: none;
     border-top: 2px dotted var(--border);
 }
 
-/* ================== MODAL ================== */
 #imageModal {
     display: none;
     position: fixed;
@@ -320,7 +304,44 @@ hr {
     border-radius: 5px;
 }
 
-/* ================== RESPONSIVO ================== */
+.code-container {
+    background: #1e1e1e;
+    border-radius: 6px;
+    margin: 1.5rem 0;
+    overflow: hidden;
+    border: 1px solid #333;
+}
+
+.code-header {
+    background: #2d2d2d;
+    color: #9cdcfe;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    border-bottom: 1px solid #444;
+}
+
+.code-container pre {
+    margin: 0;
+    padding: 1.2rem;
+    overflow-x: auto;
+}
+
+.code-container code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    color: #d4d4d4;
+    line-height: 1.6;
+}
+
+p code, li code {
+    background-color: #f1f1f1;
+    color: #d63384;
+    padding: 2px 5px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9em;
+}
+
 @media (min-width: 768px) {
     .skill-category ul {
         list-style-type: disc;

@@ -1,0 +1,123 @@
+<section class="project-card">
+    <button class="link-button-invert" onclick="voltarParaHome()">← Voltar para Projetos</button>
+
+    <header class="story-header">
+        <h1>ASCII Cam — Renderização de Alto Desempenho</h1>
+        <p class="subtitle">
+            Processamento de Vídeo em Tempo Real com Web Workers e Zero-Copy
+        </p>
+
+        <div class="tech-tags header-badges">
+            <span>TypeScript</span>
+            <span>Web Workers</span>
+            <span>Canvas 2D</span>
+            <span>Transferable Objects</span>
+            <span>Image Processing</span>
+            <span>Real-Time</span>
+        </div>
+    </header>
+
+    <div class="story-content">
+
+        <h2>O Problema</h2>
+        <p>
+            Processar cada frame de uma webcam (60 FPS) para converter pixels em caracteres ASCII é uma tarefa computacionalmente intensiva. 
+            Realizar este cálculo na <strong>Main Thread</strong> do browser causa o bloqueio da interface (UI Junk), resultando numa experiência travada e pouco responsiva.
+        </p>
+
+        <p>
+            O desafio era manter uma taxa de atualização estável de 30+ FPS, permitindo ajustes de brilho e contraste em tempo real, sem sacrificar a fluidez dos controlos da interface.
+        </p>
+
+        <h2>A Decisão: Paralelismo e Offloading</h2>
+        <p>
+            A arquitetura foi desenhada para separar a captura da renderização. A decisão principal foi mover toda a lógica matemática de conversão para um <strong>Web Worker</strong> dedicado.
+        </p>
+
+        <div class="img-container">
+            <img src="/media/mermaid/ascii/fig-2.png" 
+                 alt="Arquitetura de processamento em paralelo" 
+                 class="project-story-img" 
+                 style="cursor: zoom-in;" 
+                 onclick="openImageModal(this.src)">
+        </div>
+        <span class="img-caption">
+            Pipeline: A Main Thread captura o frame e o Worker processa a matriz de caracteres em paralelo.
+        </span>
+
+        <h2>Pipeline de Processamento</h2>
+        <p>
+            O fluxo de dados foi otimizado para minimizar o overhead de comunicação entre as threads, seguindo este ciclo:
+        </p>
+
+        <ul>
+            <li><strong>Captura (Main Thread):</strong> O frame é extraído do elemento <code>&lt;video&gt;</code> e desenhado em um buffer temporário de Canvas para obtenção dos dados de pixel (RGBA).</li>
+            <li><strong>Despacho (Zero-Copy):</strong> Os dados são enviados ao Worker via <code>postMessage</code> utilizando transferência de ownership, o que instantaneamente libera a memória na thread principal.</li>
+            <li><strong>Transformação (Worker):</strong>
+                <ul>
+                    <li>Cálculo de luminosidade por pixel usando a norma <strong>Rec. 709</strong>.</li>
+                    <li>Aplicação de Brilho/Contraste via <strong>Look-Up Table (LUT)</strong>.</li>
+                    <li>Mapeamento do valor final para o índice correspondente no conjunto de caracteres ASCII.</li>
+                </ul>
+            </li>
+            <li><strong>Devolução:</strong> O Worker retorna uma <code>Int32Array</code> contendo os índices dos caracteres e outra com as cores (se o modo colorido estiver ativo).</li>
+            <li><strong>Renderização (Main Thread):</strong> O sistema utiliza <code>fillText</code> de forma otimizada para desenhar a grid final no Canvas principal.</li>
+        </ul>
+
+        <h2>Otimização de Memória: Transferable Objects</h2>
+        <p>
+            Para evitar o custo de serialização (cópia de dados) entre a Main Thread e o Worker, utilizei <strong>Transferable Objects</strong>. 
+            Os <code>ArrayBuffers</code> contendo os dados dos pixels são "transferidos" em vez de copiados, garantindo uma latência de comunicação próxima de zero.
+        </p>
+
+        <div class="code-container">
+            <div class="code-header">typescript – Comunicação Zero-Copy</div>
+            <pre><code class="language-typescript">
+// No Worker: Enviando os dados processados sem cópia
+(self as any).postMessage({
+    charIndices,
+    colors
+}, [charIndices.buffer, colors.buffer]);
+            </code></pre>
+        </div>
+
+        <h2>Lógica de Brilho e Contraste</h2>
+        <p>
+            Em vez de calcular o contraste frame a frame para cada pixel, implementei uma <strong>LUT (Look-Up Table)</strong> dinâmica. 
+            Sempre que o utilizador altera o slider de contraste, a tabela é recalculada uma única vez, e o processamento de imagem apenas consulta o índice correspondente, poupando milhões de operações por segundo.
+        </p>
+
+        <div class="code-container">
+            <div class="code-header">typescript – Processamento de Luminosidade (Rec. 709)</div>
+            <pre><code class="language-typescript">
+// Cálculo de luminância para mapeamento ASCII
+const r = pixels[i];
+const g = pixels[i + 1];
+const b = pixels[i + 2];
+
+// Fórmula de luminosidade percebida
+let v = (r * 0.2126 + g * 0.7152 + b * 0.0722) / 255;
+v *= brightness;
+
+// Aplicação de contraste via LUT
+const finalV = contrastLUT[(v * 255) | 0] / 255;
+            </code></pre>
+        </div>
+
+        <h2>Trade-offs e Desafios</h2>
+        <ul>
+            <li><strong>Compatibilidade:</strong> O uso de <code>OffscreenCanvas</code> (quando disponível) melhora a performance, mas requer fallbacks para browsers mais antigos.</li>
+            <li><strong>Consumo de CPU:</strong> Embora a UI permaneça fluida, o processamento intensivo de matrizes consome recursos consideráveis, o que foi mitigado limitando a resolução da grid ASCII.</li>
+        </ul>
+
+        <div class="tech-box">
+            <h3>O que este projeto demonstra</h3>
+            <ul>
+                <li>Manipulação de vídeo e áudio nativa no browser.</li>
+                <li>Conhecimento profundo de concorrência em JavaScript (Web Workers).</li>
+                <li>Otimização de algoritmos para processamento de sinais e imagens.</li>
+                <li>Desenvolvimento de ferramentas de alta performance focadas em UX.</li>
+            </ul>
+        </div>
+    </div>
+</section>
